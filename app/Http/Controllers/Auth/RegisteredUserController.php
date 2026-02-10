@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, RegisterUserService $service): RedirectResponse
     {
         // 1. Validação dos campos que o frontend vai enviar
         $request->validate([
