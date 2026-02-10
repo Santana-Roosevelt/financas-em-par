@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Services\RegisterUserService;
 
 class RegisteredUserController extends Controller
 {
@@ -27,20 +28,22 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+
     public function store(Request $request): RedirectResponse
     {
+        // 1. Validação dos campos que o frontend vai enviar
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+            'account_type' => ['required', 'in:individual,couple'], // Campo novo!
+            'invitation_code' => ['nullable', 'string'],           // Campo novo!
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        // 2. Delegamos a criação para o seu Service profissional
+        $user = $service->register($request->all());
 
+        // 3. O resto o Breeze já faz (evento e login)
         event(new Registered($user));
 
         Auth::login($user);
