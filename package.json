@@ -1,0 +1,30 @@
+{
+  "name": "financas-em-par",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Plataforma financeira para casais",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:mobile": "pnpm --filter mobile start",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev": "pnpm run dev:backend & pnpm run dev:web",
+    "build:web": "pnpm --filter web build",
+    "build:backend": "pnpm --filter backend build",
+    "db:migrate": "pnpm --filter backend prisma migrate dev",
+    "db:studio": "pnpm --filter backend prisma studio",
+    "db:seed": "pnpm --filter backend prisma db seed",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
