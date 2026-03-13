@@ -6,6 +6,7 @@ import Casal from './paginas/Casal'
 import Dashboard from './paginas/Dashboard'
 import Despesas from './paginas/Despesas'
 import Cartoes from './paginas/Cartoes'
+import Metas from './paginas/Metas'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/despesas" element={<Despesas />} />
         <Route path="/cartoes" element={<Cartoes />} />
+        <Route path="/metas" element={<Metas />} />
       </Routes>
     </BrowserRouter>
   )
