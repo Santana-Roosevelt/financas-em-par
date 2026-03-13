@@ -49,6 +49,7 @@ type Despesa = typeof despesasIniciais[0]
 const formVazio = {
   nome: '', valor: '', categoria: 'Mercado', data: new Date().toISOString().split('T')[0],
   quem: 'Roosevelt', forma: 'PIX', cartao: '', tipo: 'compartilhado', recorrente: false, observacao: '',
+  parcelas: '1',
 }
 
 export default function Despesas() {
@@ -83,7 +84,7 @@ export default function Despesas() {
 
   const abrirModal = (despesa?: Despesa) => {
     if (despesa) {
-      setForm({ ...despesa, valor: String(despesa.valor), recorrente: false, observacao: '' })
+      setForm({ ...despesa, valor: String(despesa.valor), recorrente: false, observacao: '', parcelas: '1' })
       setEditando(despesa.id)
     } else {
       setForm(formVazio)
@@ -115,37 +116,37 @@ export default function Despesas() {
 
       <main style={estilosDespesas.conteudo} className="conteudo-principal" onClick={() => setMenuAberto(null)}>
 
-       {/* Header */}
+        {/* Header */}
         <div style={estilosDespesas.header}>
-        <div>
+          <div>
             <div style={estilosDespesas.headerTitulo}>Despesas 💸</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-            <input
+              <input
                 type="month"
                 value={mesFiltro === 'todos' ? '' : mesFiltro}
                 onChange={e => setMesFiltro(e.target.value || 'todos')}
                 style={estilosDespesas.filtroSelect}
-            />
-            <button
+              />
+              <button
                 onClick={() => setMesFiltro('todos')}
                 style={{
-                padding: '8px 14px',
-                background: mesFiltro === 'todos' ? '#c4793a' : '#f5f0e8',
-                color: mesFiltro === 'todos' ? 'white' : '#a89880',
-                border: 'none',
-                borderRadius: '10px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                cursor: 'pointer',
+                  padding: '8px 14px',
+                  background: mesFiltro === 'todos' ? '#c4793a' : '#f5f0e8',
+                  color: mesFiltro === 'todos' ? 'white' : '#a89880',
+                  border: 'none',
+                  borderRadius: '10px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
                 }}
-            >
+              >
                 Todos
-            </button>
+              </button>
             </div>
-        </div>
-        <button style={estilosDespesas.botaoAdicionar} onClick={() => abrirModal()}>
+          </div>
+          <button style={estilosDespesas.botaoAdicionar} onClick={() => abrirModal()}>
             + Adicionar despesa
-        </button>
+          </button>
         </div>
         {/* Resumo */}
         <div style={estilosDespesas.resumoGrade} className="cards-saldo">
@@ -236,7 +237,7 @@ export default function Despesas() {
                           onClick={e => { e.stopPropagation(); setMenuAberto(menuAberto === despesa.id ? null : despesa.id) }}
                         >⋯</button>
                         {menuAberto === despesa.id && (
-                        <div style={{ ...estilosDespesas.dropdownMenu }}>   
+                          <div style={{ ...estilosDespesas.dropdownMenu }}>
                             <button style={estilosDespesas.dropdownItem} onClick={() => { abrirModal(despesa); setMenuAberto(null) }}>✏️ Editar</button>
                             <button style={{ ...estilosDespesas.dropdownItem, color: cores.vermelho }} onClick={() => excluirDespesa(despesa.id)}>🗑️ Excluir</button>
                           </div>
@@ -318,14 +319,30 @@ export default function Despesas() {
                   </select>
                 </div>
 
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={estilosGlobais.label}>Cartão (opcional)</label>
-                  <input placeholder="Ex: Nubank" value={form.cartao} onChange={e => setForm({ ...form, cartao: e.target.value })}
-                    style={estilosGlobais.input}
-                    onFocus={e => e.target.style.borderColor = '#c4793a'}
-                    onBlur={e => e.target.style.borderColor = '#ede8df'}
-                  />
-                </div>
+                {form.forma === 'Crédito' && (
+                  <>
+                    <div style={{ marginBottom: '16px' }}>
+                      <label style={estilosGlobais.label}>Cartão</label>
+                      <select value={form.cartao} onChange={e => setForm({ ...form, cartao: e.target.value })} style={{ ...estilosGlobais.input, cursor: 'pointer' }}>
+                        <option value="">Selecionar cartão</option>
+                        <option value="Nubank">Nubank</option>
+                        <option value="Inter">Inter</option>
+                        <option value="C6 Bank">C6 Bank</option>
+                      </select>
+                    </div>
+
+                    <div style={{ marginBottom: '16px' }}>
+                      <label style={estilosGlobais.label}>Parcelas</label>
+                      <select value={form.parcelas} onChange={e => setForm({ ...form, parcelas: e.target.value })} style={{ ...estilosGlobais.input, cursor: 'pointer' }}>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(n => (
+                          <option key={n} value={n}>
+                            {n}x {form.valor ? `de R$ ${(parseFloat(form.valor) / n).toFixed(2).replace('.', ',')}` : ''}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
 
                 <div style={{ marginBottom: '16px', gridColumn: '1 / -1' }}>
                   <label style={estilosGlobais.label}>Observação (opcional)</label>

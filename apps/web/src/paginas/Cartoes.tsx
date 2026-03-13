@@ -101,7 +101,7 @@ export default function Cartoes() {
     const pct = (usado / c.limite) * 100
     const hoje = new Date().getDate()
     const diasFecha = c.fechamento >= hoje ? c.fechamento - hoje : 30 - hoje + c.fechamento
-    const alerts = []
+    const alerts: { tipo: string; msg: string; cor: string; corTexto: string }[] = []
     if (pct >= 80) alerts.push({ tipo: 'limite', msg: `Cartão ${c.nome} está com ${Math.round(pct)}% do limite usado`, cor: '#fff0ee', corTexto: '#c0392b' })
     if (diasFecha <= 3) alerts.push({ tipo: 'fatura', msg: `Fatura do ${c.nome} fecha em ${diasFecha} dia(s)`, cor: '#fff8ee', corTexto: '#c4793a' })
     return alerts
