@@ -75,7 +75,7 @@ export default function Metas() {
     if (filtro === 'casal') return m.tipo === 'casal' && !m.concluida
     if (filtro === 'individual') return m.tipo === 'individual' && !m.concluida
     if (filtro === 'concluidas') return m.concluida
-    return !m.concluida
+    return true
   })
 
   const totalGuardado = metas.reduce((s, m) => s + m.valorAtual, 0)
@@ -204,7 +204,7 @@ export default function Metas() {
             </div>
           ) : (
             metasFiltradas.map(meta => {
-              const pct = Math.min((meta.valorAtual / meta.valorAlvo) * 100, 100)
+              const pct = (meta.valorAtual / meta.valorAlvo) * 100
               const previsao = calcularPrevisao(meta)
               const prazoFormatado = meta.prazo ? new Date(meta.prazo + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) : ''
 
@@ -237,7 +237,22 @@ export default function Metas() {
 
                   {/* Barra */}
                   <div style={estilosMetas.barraFundo}>
-                    <div style={{ height: '100%', width: `${pct}%`, background: corBarra(pct), borderRadius: '99px', transition: 'width 0.4s' }} />
+                    <div style={{ height: '100%', display: 'flex', borderRadius: '99px', overflow: 'hidden' }}>
+                      <div style={{
+                        width: `${Math.min(pct, 100)}%`,
+                        background: pct >= 100 ? '#a3be8c' : corBarra(pct),
+                        transition: 'width 0.4s',
+                        flexShrink: 0,
+                      }} />
+                      {pct > 100 && (
+                        <div style={{
+                          width: `${Math.min(pct - 100, 30)}%`,
+                          background: '#8fa8c8',
+                          transition: 'width 0.4s',
+                          flexShrink: 0,
+                        }} />
+                      )}
+                    </div>
                   </div>
 
                   {/* Progresso e prazo */}
@@ -257,28 +272,26 @@ export default function Metas() {
                   )}
 
                   {/* Ações */}
-                  {!meta.concluida && (
-                    <div style={estilosMetas.acoes}>
-                      <button style={{ ...estilosMetas.botaoAcao, background: cores.primaria, color: 'white', border: 'none' }}
-                        onClick={() => { setMetaSelecionada(meta); setModalContribuicao(true) }}
-                      >+ Guardar</button>
-                      <button style={estilosMetas.botaoAcao}
-                        onClick={() => { setMetaSelecionada(meta); setModalDetalhes(true) }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#c4793a'; e.currentTarget.style.color = '#c4793a' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
-                      >📋 Histórico</button>
-                      <button style={{ ...estilosMetas.botaoAcao, flex: 'none', padding: '9px 12px' }}
-                        onClick={() => abrirModal(meta)}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = '#c4793a'; e.currentTarget.style.color = '#c4793a' }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
-                      >✏️</button>
-                      <button style={{ ...estilosMetas.botaoAcao, flex: 'none', padding: '9px 12px' }}
-                        onClick={() => excluir(meta.id)}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = cores.vermelho; e.currentTarget.style.color = cores.vermelho }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
-                      >🗑️</button>
-                    </div>
-                  )}
+                  <div style={estilosMetas.acoes}>
+                    <button style={{ ...estilosMetas.botaoAcao, background: cores.primaria, color: 'white', border: 'none' }}
+                      onClick={() => { setMetaSelecionada(meta); setModalContribuicao(true) }}
+                    >+ Guardar</button>
+                    <button style={estilosMetas.botaoAcao}
+                      onClick={() => { setMetaSelecionada(meta); setModalDetalhes(true) }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = '#c4793a'; e.currentTarget.style.color = '#c4793a' }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
+                    >📋 Histórico</button>
+                    <button style={{ ...estilosMetas.botaoAcao, flex: 'none', padding: '9px 12px' }}
+                      onClick={() => abrirModal(meta)}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = '#c4793a'; e.currentTarget.style.color = '#c4793a' }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
+                    >✏️</button>
+                    <button style={{ ...estilosMetas.botaoAcao, flex: 'none', padding: '9px 12px' }}
+                      onClick={() => excluir(meta.id)}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = cores.vermelho; e.currentTarget.style.color = cores.vermelho }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = cores.fundoBorda; e.currentTarget.style.color = cores.textoSuave }}
+                    >🗑️</button>
+                  </div>
                 </div>
               )
             })

@@ -50,15 +50,15 @@ export const estilosMetas = {
   } as React.CSSProperties,
 
   resumoCard: {
-    background: 'white',
-    borderRadius: '16px',
-    padding: '20px 24px',
-    boxShadow: '0 4px 16px rgba(45,31,14,0.06)',
-    marginBottom: '24px',
-    display: 'flex',
-    gap: '32px',
-    flexWrap: 'wrap' as const,
-  } as React.CSSProperties,
+      background: 'white',
+      borderRadius: '16px',
+      padding: '24px 32px',
+      boxShadow: '0 4px 16px rgba(45,31,14,0.06)',
+      marginBottom: '24px',
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: '24px',
+    } as React.CSSProperties,
 
   resumoItem: {
     display: 'flex',
